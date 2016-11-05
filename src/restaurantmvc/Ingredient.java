@@ -9,7 +9,7 @@ import java.sql.Statement;
  *
  * @author isaac
  */
-public class Ingredient {
+public class Ingredient extends Model{
 
     public int id;
     public String nom;
@@ -112,6 +112,44 @@ public class Ingredient {
         arr[1] = receptes;
         return arr;
     }
+    
+    public static Ingredient[] getIngredients() {
+        Connection con = Model.obrir_conexio_db();
+        Ingredient[] ingredients = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM ingredients");
+            rs.next();
+            int count = rs.getInt(1);
+
+            rs = stmt.executeQuery("SELECT * FROM ingredients");
+            ingredients = new Ingredient[count];
+            int i = 0;
+            while (rs.next()) {
+                Ingredient ingredient = new Ingredient();
+                ingredient.id = rs.getInt(1);
+                ingredient.nom = rs.getString(2);
+                ingredient.preu = rs.getFloat(3);
+                ingredient.existencies = rs.getFloat(4);
+                ingredient.unitat_medida = rs.getString(5);
+                ingredient.proveedor = rs.getString(6);
+                ingredient.stock_minim = rs.getFloat(7);
+
+                ingredients[i] = ingredient;
+                i++;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error a la base de dades: " + e.getMessage());
+            System.out.println("Estat de la base de dades: " + e.getSQLState());
+            System.out.println("Vendor Error: " + e.getErrorCode());
+        }
+        Model.tancar_conexio_db(con, rs);
+        return ingredients;
+    }
+    
+    
 
     public int getId() {
         return id;
