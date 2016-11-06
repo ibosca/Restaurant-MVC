@@ -59,6 +59,13 @@ public class Controller {
                 case 5:
                     ConsultesController.mostrar_plats_per_ingredient();
                     break;
+                case 6:
+                    ConsultesController.mostrar_plats_per_encarregat();
+                    break;
+                case 7:
+                    ConsultesController.mostrar_ingredients_baixos();
+                case 8:
+                    ConsultesController.mostrar_ingredients_alts();
                 case 0:
                     break;
             }
