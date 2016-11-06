@@ -126,6 +126,43 @@ public class Plat extends Model {
         return plats;
     }
 
+    public static Plat[] findPlatsByEncarregat(Encarregat encarregat) {
+        Connection con = Model.obrir_conexio_db();
+        Plat[] plats = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) \n"
+                    + "FROM plats \n"
+                    + "WHERE plats.categoria =\n"
+                    + "(SELECT categoria_encarregat.categoria FROM categoria_encarregat WHERE categoria_encarregat.encarregat = " + encarregat.getId()+")");
+            rs.next();
+            int count = rs.getInt(1);
+            plats = new Plat[count];
+            rs = stmt.executeQuery("SELECT plats.id, plats.nom, plats.descripcio, plats.dificultat, plats.coste_elaboracio, plats.preu, categoria.nom as categoria FROM plats INNER JOIN categoria  ON  plats.categoria = categoria.id  WHERE plats.categoria = (SELECT categoria_encarregat.categoria FROM categoria_encarregat WHERE categoria_encarregat.encarregat ="+encarregat.getId()+")");
+            int i = 0;
+            while (rs.next()) {
+                Plat plat = new Plat();
+                plat.id = rs.getInt(1);
+                plat.nom = rs.getString(2);
+                plat.descripcio = rs.getString(3);
+                plat.dificultat = rs.getInt(4);
+                plat.coste_elaboracio = rs.getFloat(5);
+                plat.preu = rs.getFloat(6);
+                plat.categoria = rs.getString(7);
+                plats[i] = plat;
+                i++;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error a la base de dades: " + e.getMessage());
+            System.out.println("Estat de la base de dades: " + e.getSQLState());
+            System.out.println("Vendor Error: " + e.getErrorCode());
+        }
+        Model.tancar_conexio_db(con, rs);
+        return plats;
+    }
+
     public int getId() {
         return id;
     }

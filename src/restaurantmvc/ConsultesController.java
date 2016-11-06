@@ -47,4 +47,24 @@ public class ConsultesController extends Controller {
         View.render_carta(plats);
         
     }
+    
+    public static void mostrar_plats_per_encarregat() {
+        Encarregat[] encarregats = Encarregat.getEncarregats();
+        View.render_encarregats(encarregats);
+        View.pinta("Tria un encarregat: ");
+        int select = Integer.parseInt(scanner.nextLine());
+        Encarregat selected_encarregat = encarregats[select];
+        Plat[] plats = Plat.findPlatsByEncarregat(selected_encarregat);
+        View.render_carta(plats);
+    }
+    
+    public static void mostrar_ingredients_baixos() {
+        Ingredient[] ingredients = Ingredient.getIngredientsByStock("<");
+        View.render_ingredients(ingredients);
+    }
+    
+    public static void mostrar_ingredients_alts() {
+        Ingredient[] ingredients = Ingredient.getIngredientsByStock(">");
+        View.render_ingredients(ingredients);
+    }
 }
